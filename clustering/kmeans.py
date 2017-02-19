@@ -5,13 +5,14 @@ import random
 def kmeans(points, clusters):
     centers = random.sample(points, clusters)
     prev_assignment = None
+    counter = 0
     while True:
 
         # Assign points
         distances = cdist(points, centers, 'euclidean').tolist()
         assignment = [x.index(min(x)) for x in distances]
 
-        # if assignment = prev_assignment end
+        # Test end condition
         if assignment == prev_assignment:
             break
 
@@ -21,8 +22,7 @@ def kmeans(points, clusters):
             centers[x] = np.mean(myset, axis=0)
         prev_assignment = assignment
 
-    return  (centers, prev_assignment)
+        counter += 1
+        print("iteration: " + str(counter))
 
-result = kmeans([(1,1),(1,2),(5,1),(5,2)], 2)
-print([list(x) for x in result[0]])
-print(result[1])
+    return (list(map(tuple, centers)), prev_assignment)
