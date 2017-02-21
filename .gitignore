@@ -2,3 +2,4 @@
 *.jpg
 *.bmp
 __pycache__
+datasets
