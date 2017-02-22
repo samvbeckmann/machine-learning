@@ -3,6 +3,12 @@ import numpy as np
 import random
 
 def kmeans(points, clusters):
+    """Executes the kmeans clustering algorithm.
+
+    Keyword parameters:
+    points -- a list of tuples representing the points
+    clusters -- the number of clusters to use
+    """
     centers = random.sample(points, clusters)
     prev_assignment = None
     counter = 0
@@ -23,6 +29,5 @@ def kmeans(points, clusters):
         prev_assignment = assignment
 
         counter += 1
-        print("iteration: " + str(counter))
 
     return (list(map(tuple, centers)), prev_assignment)
