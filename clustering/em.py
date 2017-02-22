@@ -2,11 +2,13 @@ from scipy.stats import norm
 import random
 
 def em_univariate(points, distributions):
-    """Executes the Expectation / Maximization Algorithm on the data.
-    `Points` is a list of tuples representing the points, and `distributions` is
-    the number of distributions to use in the algorithm."""
+    """Executes the Expectation / Maximization Algorithm on univariate data.
 
-    # TODO: Init: randomly assign weights to points
+    Keyword arguments:
+    points -- a list of floats representing the points
+    distributions -- the number of distributions to use
+    """
+    # Init
     tol = .001
     weights = []
     means = []
@@ -21,7 +23,6 @@ def em_univariate(points, distributions):
         # Update phi vector (normalized sum of weights for distribution)
         weight_sums = list(map(sum, zip(*weights)))
         phi = [x / len(points) for x in weight_sums]
-        print(len(weight_sums))
         old_means = means
         means = []
 
