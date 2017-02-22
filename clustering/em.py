@@ -47,11 +47,11 @@ def em_univariate(points, distributions):
             break;
 
         # Perform E step --> Updating weights based on distributions
-        for j in range(distributions):
+        for i in range(len(points)):
             temp_weights = []
-            for i in range(len(points)):
+            for j in range(distributions):
                 temp_weights.append(norm.pdf(points[i], means[j], parameters[j]) * phi[j])
             norm_const = sum(temp_weights)
-            weights[j] = [x / norm_const for x in temp_weights]
+            weights[i] = [x / norm_const for x in temp_weights]
 
     return (means, weights)
