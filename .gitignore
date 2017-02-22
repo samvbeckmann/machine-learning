@@ -3,3 +3,4 @@
 *.bmp
 __pycache__
 datasets
+output
