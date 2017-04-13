@@ -1,6 +1,9 @@
 .DS_Store
 *.jpg
 *.bmp
+*.iml
+*.xml
+.idea
 __pycache__
 datasets
 output
