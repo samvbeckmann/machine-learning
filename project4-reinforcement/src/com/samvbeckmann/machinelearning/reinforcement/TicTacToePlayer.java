@@ -10,7 +10,7 @@ public interface TicTacToePlayer {
      * @param board
      * @param myPlayerNum
      * @param actions
-     * @param reward Reward for last action taken
+     * @param reward      Reward for last action taken
      * @return Square to move in
      */
     int interact(int board, int myPlayerNum, int[] actions, double reward);

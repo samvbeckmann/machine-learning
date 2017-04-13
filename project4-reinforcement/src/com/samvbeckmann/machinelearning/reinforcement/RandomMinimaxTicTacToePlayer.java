@@ -1,11 +1,11 @@
 package com.samvbeckmann.machinelearning.reinforcement;
 
-//An optimal player for TTT
+// An optimal player for TTT
 public class RandomMinimaxTicTacToePlayer extends AbstractMinimaxPlayer {
 
     public int interact(int boardID, int myNum, int[] actions, double reward) {
         int[] board = Environment.getBoard(boardID);
-        //It's our turn
+        // It's our turn
 
         /*
         System.out.println("Given: ");
@@ -17,9 +17,9 @@ public class RandomMinimaxTicTacToePlayer extends AbstractMinimaxPlayer {
             System.out.print(""+actions[j]+" ");
         */
 
-        //Do we have moves?
-        if(actions == null || actions.length == 0) return -1;
+        // Do we have moves?
+        if (actions == null || actions.length == 0) return -1;
 
-        return minimax(board, actions, myNum, (myNum==-1), true, true);
+        return minimax(board, actions, myNum, (myNum == -1), true, true);
     }
 }

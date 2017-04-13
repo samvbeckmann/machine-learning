@@ -18,8 +18,8 @@ public class MinimaxTicTacToePlayer extends AbstractMinimaxPlayer {
         */
 
         //Do we have moves?
-        if(actions == null || actions.length == 0) return -1;
+        if (actions == null || actions.length == 0) return -1;
 
-        return minimax(board, actions, myNum, (myNum==-1), true, false);
+        return minimax(board, actions, myNum, (myNum == -1), true, false);
     }
 }

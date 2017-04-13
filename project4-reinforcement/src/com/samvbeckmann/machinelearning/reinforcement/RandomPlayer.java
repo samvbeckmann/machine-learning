@@ -15,8 +15,8 @@ public class RandomPlayer implements TicTacToePlayer {
 
     public int interact(int boardID, int myPlayerNum, int[] actions, double reward) {
         int[] moves = Environment.getActions(boardID);
-        if(moves==null) return -1;
-        if(moves.length == 0) return -1;
+        if (moves == null) return -1;
+        if (moves.length == 0) return -1;
         return moves[r.nextInt(moves.length)];
     }
 }
