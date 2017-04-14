@@ -1,5 +1,6 @@
 package com.samvbeckmann.machinelearning.reinforcement;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -9,56 +10,49 @@ import java.util.Random;
  */
 abstract public class AbstractMinimaxPlayer implements TicTacToePlayer {
     private Random rnd = new Random();
+    protected Board.BoardState playerID;
+    protected boolean randomSelection;
 
-    abstract public int interact(int boardID, int myNum, int[] actions, double reward);
+    double minimax(Board board, Board.BoardState currentPlayer, boolean firstLevel) {
+        List<Integer> actions = board.getAvailableActions();
 
-    int minimax(int[] board, int[] actions, int myNum, boolean m, boolean first, boolean random) {
-        //System.out.println("Checking: "); Environment.printBoard(board);
-        //System.out.println("Actions: " + actions.length);
-        //for(int i=0; i<actions.length; i++)
-        //    System.out.print("" + actions[i] + " ");
-        //System.out.println();
+//        System.out.println("Checking: ");
+//        System.out.print(board.toString());
+//        System.out.println("Actions: " +actions.size());
+//        for (Integer action : actions) System.out.print("" + action + " ");
+//        System.out.println();
         //Base cases
-        if (Environment.xWins(board)) {
-            //System.out.println("XWins!");
+        if (board.playerWins(Board.BoardState.X_PLAYER)) {
+//            System.out.println("XWins!");
             return Environment.WIN_REWARD;
         }
 
-        if (Environment.oWins(board)) {
-            //System.out.println("OWins!");
+        if (board.playerWins(Board.BoardState.O_PLAYER)) {
+//            System.out.println("OWins!");
             return Environment.LOSE_REWARD;
         }
 
-        if (Environment.catWins(board)) {
-            //System.out.println("cat");
+        if (board.gameState() == 3) {
+//            System.out.println("cat");
             return Environment.DRAW_REWARD;
         }
 
+        boolean isXPlayer = currentPlayer == Board.BoardState.X_PLAYER;
+        Board.BoardState nextPlayer = isXPlayer ? Board.BoardState.O_PLAYER : Board.BoardState.X_PLAYER;
+
         //Iterate through the kids and return the best
-        double max[] = new double[actions.length];
-        for (int i = 0; i < actions.length; i++) {
-            int[] newBoard = Environment.getNewBoard(board, actions[i], myNum);
-            if (newBoard == null) {
-                System.out.println("Bad board.");
-                System.out.println("Index: " + i);
-                System.out.println("Actions: ");
-                for (int j = 0; j < actions.length; j++)
-                    System.out.print("" + actions[j] + " ");
-                System.out.println("\nBoard: ");
-                for (int j = 0; j < board.length; j++)
-                    System.out.print("" + board[j] + " ");
-                System.out.println();
-            }
-            int[] newActions = Environment.getActions(newBoard);
-            max[i] = minimax(newBoard, newActions, (myNum == -1 ? 1 : -1), !m, false, random);
+        double max[] = new double[actions.size()];
+        for (int i = 0; i < actions.size(); i++) {
+            Board newBoard = board.simulateMove(currentPlayer, actions.get(i));
+            max[i] = minimax(newBoard, nextPlayer, false);
         }
 
         //Find the best
-        double best = (m ? Environment.LOSE_REWARD * 2 : Environment.WIN_REWARD * 2);
+        double best = (isXPlayer ? Environment.LOSE_REWARD * 2 : Environment.WIN_REWARD * 2);
         int count = 0;
         int loc = 0;
         for (int i = 0; i < max.length; i++) {
-            if (m) {
+            if (isXPlayer) {
                 if (max[i] > best) {
                     best = max[i];
                     count = 0;
@@ -69,25 +63,27 @@ abstract public class AbstractMinimaxPlayer implements TicTacToePlayer {
                     best = max[i];
                     count = 0;
                     loc = i;
-                } else if (max[i] == best) count++;
-            }
-        }
-
-        //If we're random...
-        if (random && count > 1 && first) {
-            int choice = rnd.nextInt(count);
-            int c = 0;
-            for (int i = 0; i < max.length; i++) {
-                if (max[i] == best) {
-                    if (c == choice)
-                        if (first) return actions[i];
-                        else return (int) max[i];
-                    else c++;
+                } else if (max[i] == best) {
+                    count++;
                 }
             }
         }
 
-        if (first) return actions[loc];
-        return (int) max[loc];
+        //If we're random...
+        if (randomSelection && firstLevel && count > 1) {
+            int choice = rnd.nextInt(count);
+            int c = 0;
+            for (int i = 0; i < max.length; i++) {
+                if (max[i] == best) {
+                    if (c == choice) {
+                        return actions.get(i);
+                    } else c++;
+                }
+            }
+        }
+
+        if (firstLevel)
+            return actions.get(loc);
+        return max[loc];
     }
 }

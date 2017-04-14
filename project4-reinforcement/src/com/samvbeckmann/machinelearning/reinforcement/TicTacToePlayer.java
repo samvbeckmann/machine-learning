@@ -7,11 +7,16 @@ public interface TicTacToePlayer {
     /**
      * Method for an agent to interact with the Tic-Tac-Toe board.
      *
-     * @param board
-     * @param myPlayerNum
-     * @param actions
-     * @param reward      Reward for last action taken
+     * @param board  Current board state
+     * @param reward Reward for last action taken
      * @return Square to move in
      */
-    int interact(int board, int myPlayerNum, int[] actions, double reward);
+    int interact(Board board, double reward);
+
+    /**
+     * Initialization method that passes an ID to the player.
+     *
+     * @param playerID X_PLAYER or O_PLAYER, representing the player's ID in the game.
+     */
+    void init(Board.BoardState playerID);
 }

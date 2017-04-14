@@ -1,10 +1,22 @@
 package com.samvbeckmann.machinelearning.reinforcement;
 
+import java.util.List;
+
 // An optimal player for TTT
 public class RandomMinimaxTicTacToePlayer extends AbstractMinimaxPlayer {
 
-    public int interact(int boardID, int myNum, int[] actions, double reward) {
-        int[] board = Environment.getBoard(boardID);
+    public RandomMinimaxTicTacToePlayer() {
+        this.randomSelection = true;
+    }
+
+    @Override
+    public void init(Board.BoardState playerID) {
+        this.playerID = playerID;
+    }
+
+    @Override
+    public int interact(Board board, double reward) {
+//        int[] board = Environment.getBoard(boardID);
         // It's our turn
 
         /*
@@ -18,8 +30,9 @@ public class RandomMinimaxTicTacToePlayer extends AbstractMinimaxPlayer {
         */
 
         // Do we have moves?
-        if (actions == null || actions.length == 0) return -1;
+        List<Integer> actions = board.getAvailableActions();
+        if (actions.size() == 0) return -1;
 
-        return minimax(board, actions, myNum, (myNum == -1), true, true);
+        return (int) minimax(board, playerID, true);
     }
 }
