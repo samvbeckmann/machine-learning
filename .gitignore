@@ -3,6 +3,7 @@
 *.bmp
 *.iml
 *.xml
+*.class
 .idea
 __pycache__
 datasets
