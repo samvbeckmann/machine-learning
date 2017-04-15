@@ -3,25 +3,16 @@ package com.samvbeckmann.machinelearning.reinforcement;
 import java.util.HashMap;
 
 public class SparseQTable {
-    private HashMap table;
+    private HashMap<StateAction, Double> table;
     private double def = 0;
 
     public SparseQTable() {
-        table = new HashMap();
+        this(0);
     }
 
     public SparseQTable(double def) {
         this.def = def;
-    }
-
-    public double getQValue(int state, int action) {
-        Double d = (Double) table.get(new StateAction(state, action));
-        if (d == null) return def;
-        return d.doubleValue();
-    }
-
-    public void setQValue(int state, int action, double val) {
-        table.put(new StateAction(state, action), new Double(val));
+        table = new HashMap<>();
     }
 
     //A simple test
@@ -41,16 +32,34 @@ public class SparseQTable {
         else System.out.println("Test failed!");
     }
 
+    public double getQValue(int state, int action) {
+        Double d = table.get(new StateAction(state, action));
+        if (d == null) return def;
+        return d;
+    }
+
+    public void setQValue(int state, int action, double val) {
+        table.put(new StateAction(state, action), val);
+    }
+
     class StateAction {
         private int state;
         private int action;
 
-        public StateAction(int s, int a) {
+        StateAction(int s, int a) {
             state = s;
             action = a;
         }
 
         public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
+
+            if (!(o instanceof StateAction)) {
+                return false;
+            }
+
             StateAction sa = (StateAction) o;
             return sa.state == state && sa.action == action;
         }
