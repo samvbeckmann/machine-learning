@@ -1,7 +1,6 @@
 package com.samvbeckmann.machinelearning.reinforcement.players;
 
 import com.samvbeckmann.machinelearning.reinforcement.simulation.Board;
-import com.samvbeckmann.machinelearning.reinforcement.simulation.Environment;
 import com.samvbeckmann.machinelearning.reinforcement.simulation.PlayerToken;
 
 import java.util.List;
@@ -13,6 +12,10 @@ import java.util.Random;
  * @author Sam Beckmann
  */
 abstract class AbstractMinimaxPlayer implements TicTacToePlayer {
+    private final static double X_WIN_REWARD = 1;
+    private final static double O_WIN_REWARD = -1;
+    private final static double DRAW_REWARD = 0;
+
     private PlayerToken playerID;
     boolean randomSelection;
     private final Random rnd = new Random();
@@ -52,11 +55,11 @@ abstract class AbstractMinimaxPlayer implements TicTacToePlayer {
         // Handle base cases
         switch (board.getGameState()) {
             case 1:
-                return Environment.WIN_REWARD;
+                return X_WIN_REWARD;
             case 2:
-                return Environment.LOSE_REWARD;
+                return O_WIN_REWARD;
             case 3:
-                return Environment.DRAW_REWARD;
+                return DRAW_REWARD;
         }
 
         List<Integer> actions = board.getAvailableActions();
@@ -71,7 +74,7 @@ abstract class AbstractMinimaxPlayer implements TicTacToePlayer {
         }
 
         //Find the best
-        double best = (isXPlayer ? Environment.LOSE_REWARD * 2 : Environment.WIN_REWARD * 2);
+        double best = (isXPlayer ? O_WIN_REWARD * 2 : X_WIN_REWARD * 2);
         int count = 0;
         int loc = 0;
         for (int i = 0; i < max.length; i++) {

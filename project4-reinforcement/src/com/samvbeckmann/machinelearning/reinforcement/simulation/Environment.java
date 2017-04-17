@@ -10,12 +10,12 @@ import java.util.Random;
  *
  * @author Sam Beckmann
  */
-public class Environment {
+class Environment {
 
     // Reward values
-    public static final double WIN_REWARD = 100.0;
-    public static final double LOSE_REWARD = -100.0;
-    public static final double DRAW_REWARD = 0.0;
+    private static final double WIN_REWARD = 100.0;
+    private static final double LOSE_REWARD = -100.0;
+    private static final double DRAW_REWARD = 0.0;
     private static final double GOOD_REWARD = 50.0;
     private static final double BAD_REWARD = -50.0;
 
