@@ -29,7 +29,7 @@ public class RandomPlayer implements TicTacToePlayer {
     }
 
     @Override
-    public void giveReward(double reward) {
+    public void giveReward(Board board, double reward) {
         // NOOP
     }
 

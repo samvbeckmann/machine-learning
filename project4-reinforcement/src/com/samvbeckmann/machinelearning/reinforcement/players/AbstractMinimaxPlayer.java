@@ -21,7 +21,7 @@ abstract class AbstractMinimaxPlayer implements TicTacToePlayer {
     private final Random rnd = new Random();
 
     @Override
-    public void giveReward(double reward) {
+    public void giveReward(Board board, double reward) {
         // NOOP
     }
 

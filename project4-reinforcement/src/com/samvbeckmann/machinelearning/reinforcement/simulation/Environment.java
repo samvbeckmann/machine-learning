@@ -160,10 +160,10 @@ class Environment {
 
         while (board.getGameState() == 0) {
             if (player == PlayerToken.X_PLAYER) {
-                xPlayer.giveReward(xPlayerReward);
+                xPlayer.giveReward(board, xPlayerReward);
                 move = xPlayer.interact(board);
             } else {
-                oPlayer.giveReward(oPlayerReward);
+                oPlayer.giveReward(board, oPlayerReward);
                 move = oPlayer.interact(board);
             }
 
@@ -199,22 +199,22 @@ class Environment {
 
         //Give out the final rewards
         if (board.playerWins(PlayerToken.X_PLAYER)) {
-            xPlayer.giveReward(WIN_REWARD);
-            oPlayer.giveReward(LOSE_REWARD);
+            xPlayer.giveReward(board, WIN_REWARD);
+            oPlayer.giveReward(board, LOSE_REWARD);
             if (print)
                 System.out.println("X Wins!");
             xWins++;
             return PlayerToken.X_PLAYER;
         } else if (board.playerWins(PlayerToken.O_PLAYER)) {
-            xPlayer.giveReward(LOSE_REWARD);
-            oPlayer.giveReward(WIN_REWARD);
+            xPlayer.giveReward(board, LOSE_REWARD);
+            oPlayer.giveReward(board, WIN_REWARD);
             if (print)
                 System.out.println("O Wins!");
             oWins++;
             return PlayerToken.O_PLAYER;
         } else {
-            xPlayer.giveReward(DRAW_REWARD);
-            oPlayer.giveReward(DRAW_REWARD);
+            xPlayer.giveReward(board, DRAW_REWARD);
+            oPlayer.giveReward(board, DRAW_REWARD);
             if (print)
                 System.out.println("Cat Wins!");
             ties++;
