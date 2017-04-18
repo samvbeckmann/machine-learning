@@ -33,11 +33,8 @@ public class Board {
      *
      * @param passedBoard Board to be copied.
      */
-    @SuppressWarnings("WeakerAccess")
     public Board(Board passedBoard) {
-        for (int i = 0; i < board.length; i++) {
-            this.board[i] = passedBoard.getState(i);
-        }
+        System.arraycopy(passedBoard.board, 0, this.board, 0, board.length);
     }
 
     /**

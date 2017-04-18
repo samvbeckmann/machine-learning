@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by sam on 4/17/17.
+ * Defines a tic-tac-toe player that uses Q-Learning to play.
  */
 @SuppressWarnings("unused")
 public class QLearnerPlayer implements TicTacToePlayer {

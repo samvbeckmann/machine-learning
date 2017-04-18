@@ -4,8 +4,14 @@ import com.samvbeckmann.machinelearning.reinforcement.simulation.Board;
 
 import java.util.HashMap;
 
+/**
+ * Defines a Q-Table that provides a Q function for use in Q-Learning.
+ * Essentially a wrapper around a {@link HashMap}, the SparseQTable hashes a state and an action in a new
+ * {@link StateAction}, and maps that to an appropriate Q-value.
+ */
 public class SparseQTable {
-    private HashMap<StateAction, Double> table;
+
+    private final HashMap<StateAction, Double> table;
     private double def = 0;
 
     public SparseQTable() {
@@ -17,40 +23,43 @@ public class SparseQTable {
         table = new HashMap<>();
     }
 
-    //A simple test
-//    public static void main(String[] args) {
-//        SparseQTable q1 = new SparseQTable();
-//
-//        q1.setQValue(3, 5, 1.0);
-//        q1.setQValue(7, 8, 2.0);
-//
-//        q1.setQValue(7, 8, 3.0);
-//
-//        double threefive = q1.getQValue(3, 5);
-//        double seveneight = q1.getQValue(7, 8);
-//        double none = q1.getQValue(-1, -1);
-//
-//        if (threefive == 1.0 && seveneight == 3.0 && none == 0) System.out.println("Test passed!");
-//        else System.out.println("Test failed!");
-//    }
-
+    /**
+     * Gets the Q-Value for a given state and action.
+     *
+     * @param state  State of the q-value.
+     * @param action Action of the q-value.
+     * @return The q-value for the provided state-action pair.
+     */
     public double getQValue(Board state, int action) {
-        Double d = table.get(new StateAction(state, action));
-        if (d == null) return def;
-        return d;
+        return table.getOrDefault(new StateAction(state, action), def);
     }
 
+    /**
+     * Takes a given value, and set the q-value of the state-action pair to that value.
+     *
+     * @param state  State of the q-value.
+     * @param action Action of the q-value.
+     * @param val    The value to set the state-action pair to.
+     */
     public void setQValue(Board state, int action, double val) {
         table.put(new StateAction(state, action), val);
     }
 
+    /**
+     * Sets the q-value of a given stateAction to the given value.
+     * @param stateAction State-Action pair to set value for.
+     * @param val Value to set the State-Action pair to.
+     */
     public void setQValue(StateAction stateAction, double val) {
         table.put(stateAction, val);
     }
 
+    /**
+     * Wrapper around a State-Action pair that provides a unique hash and equality.
+     */
     class StateAction {
-        private Board state;
-        private int action;
+        private final Board state;
+        private final int action;
 
         StateAction(Board s, int a) {
             state = s;
