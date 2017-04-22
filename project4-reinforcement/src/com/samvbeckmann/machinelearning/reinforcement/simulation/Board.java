@@ -165,4 +165,20 @@ public class Board {
         result += board[6].toString() + "|" + board[7].toString() + "|" + board[8].toString() + "\n";
         return result;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Board board1 = (Board) o;
+
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        return Arrays.equals(board, board1.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(board);
+    }
 }

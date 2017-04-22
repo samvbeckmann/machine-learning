@@ -1,5 +1,6 @@
 package com.samvbeckmann.machinelearning.reinforcement.simulation;
 
+import com.samvbeckmann.machinelearning.reinforcement.players.MinimaxTicTacToePlayer;
 import com.samvbeckmann.machinelearning.reinforcement.players.RandomMinimaxTicTacToePlayer;
 import com.samvbeckmann.machinelearning.reinforcement.players.TicTacToePlayer;
 
@@ -137,11 +138,19 @@ class Environment {
      * Runs the tic-tac-toe simulation using the environment variables.
      */
     private void runSimulation() {
-        for (int i = 0; i < rounds; i++) {
-            winArray[i] = runGame(new RandomMinimaxTicTacToePlayer());
-        }
+//        for (int i = 0; i < rounds; i++) {
+//            winArray[i] = runGame(new MinimaxTicTacToePlayer());
+//        }
+//
+//        if (stats) System.out.print(getStatsString());
 
-        if (stats) System.out.print(getStatsString());
+        while (true) {
+            for (int i = 0; i < rounds; i++) {
+                winArray[i] = runGame(new MinimaxTicTacToePlayer());
+            }
+            if (stats) System.out.print(getStatsString());
+            xWins = oWins = ties = 0;
+        }
     }
 
     /**
@@ -167,8 +176,6 @@ class Environment {
                 move = oPlayer.interact(board);
             }
 
-            board.move(player, move);
-
             if (print) {
                 System.out.println("Player: " + player.toString() + " played: " + move + ".");
                 System.out.print(board.toString());
@@ -191,6 +198,8 @@ class Environment {
                         oPlayerReward = BAD_REWARD;
                 }
             }
+
+            board.move(player, move);
 
             player = player == PlayerToken.X_PLAYER ? PlayerToken.O_PLAYER : PlayerToken.X_PLAYER;
         }
