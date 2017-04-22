@@ -27,11 +27,11 @@ public interface TicTacToePlayer {
     /**
      * Gives a reward value to the agent for its most recent move. This method will be called a maximum of one time per
      * turn, although it may not be called at all. The reward is always in respect to the most recently made movement.
-     *
-     * @param board
+     *  @param board
      * @param reward Value of the reward for the agent's last move. Higher rewards are better.
+     * @param terminal
      */
-    void giveReward(Board board, double reward);
+    void giveReward(Board board, double reward, boolean terminal);
 
     /**
      * Update the token that represents the player.

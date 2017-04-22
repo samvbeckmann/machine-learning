@@ -12,6 +12,7 @@ import java.util.HashMap;
 public class SparseQTable {
 
     private final HashMap<StateAction, Double> table;
+    private final HashMap<StateAction, Integer> alpha;
     private double def = 0;
 
     public SparseQTable() {
@@ -21,6 +22,7 @@ public class SparseQTable {
     public SparseQTable(double def) {
         this.def = def;
         table = new HashMap<>();
+        alpha = new HashMap<>();
     }
 
     /**
@@ -45,13 +47,13 @@ public class SparseQTable {
         table.put(new StateAction(state, action), val);
     }
 
-    /**
-     * Sets the q-value of a given stateAction to the given value.
-     * @param stateAction State-Action pair to set value for.
-     * @param val Value to set the State-Action pair to.
-     */
-    public void setQValue(StateAction stateAction, double val) {
-        table.put(stateAction, val);
+    public void incrementAlpha(Board state, int action) {
+        StateAction wrapper = new StateAction(state, action);
+        alpha.put(wrapper, alpha.getOrDefault(wrapper, 0) + 1);
+    }
+
+    public double alphaCalc(Board state, int action) {
+        return 1 / alpha.getOrDefault(new StateAction(state, action), 0);
     }
 
     /**

@@ -14,35 +14,35 @@ import java.util.Random;
 @SuppressWarnings("unused")
 public class QLearnerPlayer implements TicTacToePlayer {
 
-    private PlayerToken player;
     private SparseQTable qTable;
-    private AlphaTable alpha;
     private Board lastState;
     private int lastAction;
     private double gamma;
     private Random rnd;
+    private double epsilon;
 
     private final static double GAMMA = 0.9;
 
     public QLearnerPlayer() {
         this.qTable = new SparseQTable();
-        this.alpha = new AlphaTable();
         this.lastState = null;
         this.lastAction = -1;
         this.rnd = new Random();
+        this.epsilon = 0.05;
     }
 
     @Override
     public int interact(Board board) {
         lastState = new Board(board);
-        alpha.updateState(lastState);
+//        alpha.updateState(lastState);
         int action = selectAction(board);
+        qTable.incrementAlpha(lastState, action);
         lastAction = action;
         return action;
     }
 
     @Override
-    public void giveReward(Board board, double reward) {
+    public void giveReward(Board board, double reward, boolean terminal) {
         if (lastState == null) return;
         List<Integer> possibleActions = board.getAvailableActions();
         double maxNextUtility = -Double.MAX_VALUE;
@@ -52,56 +52,62 @@ public class QLearnerPlayer implements TicTacToePlayer {
                 maxNextUtility = Math.max(qTable.getQValue(board, action), maxNextUtility);
             }
         } else {
-            maxNextUtility = reward;
+            maxNextUtility = 0;
         }
-        double qDelta = alpha.alphaCalc(lastState) * (reward + GAMMA * maxNextUtility - qTable.getQValue(lastState, lastAction));
+
+        double qDelta = qTable.alphaCalc(lastState, lastAction) * (reward + GAMMA * maxNextUtility - qTable.getQValue(lastState, lastAction));
         qTable.setQValue(lastState, lastAction, qTable.getQValue(lastState, lastAction) + qDelta);
+
+        if (terminal) {
+            lastState = null;
+            epsilon *= .999;
+        }
     }
 
     @Override
     public void setPlayer(PlayerToken playerID) {
-        this.player = playerID;
+        // NOOP
     }
 
-    private int selectAction(Board state) {
-        double temp = 1 / Math.log(alpha.getStateValue(state));
-        List<Integer> actions = state.getAvailableActions();
-        double[] probabilities = new double[actions.size()];
-        double sum = 0;
-        for (int i = 0; i < actions.size(); i++) {
-            probabilities[i] = Math.exp(qTable.getQValue(state, actions.get(i)) / temp);
-            sum += probabilities[i];
-        }
-        double runningTotal = 0;
-        for (int i = 0; i < probabilities.length; i++) {
-            probabilities[i] = probabilities[i] / sum + runningTotal;
-            runningTotal += probabilities[i];
-        }
-
-        double choiceSelector = rnd.nextDouble();
-        for (int i = 0; i < probabilities.length;  i++) {
-            if (choiceSelector < probabilities[i]) {
-                return actions.get(i);
-            }
-        }
-        return -1;
-    }
+//    private int selectAction(Board state) {
+//        double temp = 1 / Math.log(alpha.getStateValue(state));
+//        List<Integer> actions = state.getAvailableActions();
+//        double[] probabilities = new double[actions.size()];
+//        double sum = 0;
+//        for (int i = 0; i < actions.size(); i++) {
+//            probabilities[i] = Math.exp(qTable.getQValue(state, actions.get(i)) / temp);
+//            sum += probabilities[i];
+//        }
+//        double runningTotal = 0;
+//        for (int i = 0; i < probabilities.length; i++) {
+//            probabilities[i] = probabilities[i] / sum + runningTotal;
+//            runningTotal += probabilities[i];
+//        }
+//
+//        double choiceSelector = rnd.nextDouble();
+//        for (int i = 0; i < probabilities.length;  i++) {
+//            if (choiceSelector < probabilities[i]) {
+//                return actions.get(i);
+//            }
+//        }
+//        return -1;
+//    }
 
     // ε-greedy
-//    private int selectAction(Board state) {
-//        List<Integer> possibleActions = state.getAvailableActions();
-//        if (rnd.nextDouble() > 0.8) {
-//            return possibleActions.get(rnd.nextInt(possibleActions.size()));
-//        } else {
-//            double currentMax = qTable.getQValue(state, possibleActions.get(0));
-//            int currentBestAction = possibleActions.get(0);
-//            for (int action : possibleActions) {
-//                if (qTable.getQValue(state, action) > currentMax) {
-//                    currentMax = qTable.getQValue(state, action);
-//                    currentBestAction = action;
-//                }
-//            }
-//            return currentBestAction;
-//        }
-//    }
+    private int selectAction(Board state) {
+        List<Integer> possibleActions = state.getAvailableActions();
+        if (rnd.nextDouble() < epsilon) {
+            return possibleActions.get(rnd.nextInt(possibleActions.size()));
+        } else {
+            double currentMax = qTable.getQValue(state, possibleActions.get(0));
+            int currentBestAction = possibleActions.get(0);
+            for (int action : possibleActions) {
+                if (qTable.getQValue(state, action) > currentMax) {
+                    currentMax = qTable.getQValue(state, action);
+                    currentBestAction = action;
+                }
+            }
+            return currentBestAction;
+        }
+    }
 }

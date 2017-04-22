@@ -1,7 +1,6 @@
 package com.samvbeckmann.machinelearning.reinforcement.simulation;
 
 import com.samvbeckmann.machinelearning.reinforcement.players.MinimaxTicTacToePlayer;
-import com.samvbeckmann.machinelearning.reinforcement.players.RandomMinimaxTicTacToePlayer;
 import com.samvbeckmann.machinelearning.reinforcement.players.TicTacToePlayer;
 
 import java.util.Random;
@@ -169,10 +168,10 @@ class Environment {
 
         while (board.getGameState() == 0) {
             if (player == PlayerToken.X_PLAYER) {
-                xPlayer.giveReward(board, xPlayerReward);
+                xPlayer.giveReward(board, xPlayerReward, false);
                 move = xPlayer.interact(board);
             } else {
-                oPlayer.giveReward(board, oPlayerReward);
+                oPlayer.giveReward(board, oPlayerReward, false);
                 move = oPlayer.interact(board);
             }
 
@@ -208,22 +207,22 @@ class Environment {
 
         //Give out the final rewards
         if (board.playerWins(PlayerToken.X_PLAYER)) {
-            xPlayer.giveReward(board, WIN_REWARD);
-            oPlayer.giveReward(board, LOSE_REWARD);
+            xPlayer.giveReward(board, WIN_REWARD, true);
+            oPlayer.giveReward(board, LOSE_REWARD, true);
             if (print)
                 System.out.println("X Wins!");
             xWins++;
             return PlayerToken.X_PLAYER;
         } else if (board.playerWins(PlayerToken.O_PLAYER)) {
-            xPlayer.giveReward(board, LOSE_REWARD);
-            oPlayer.giveReward(board, WIN_REWARD);
+            xPlayer.giveReward(board, LOSE_REWARD, true);
+            oPlayer.giveReward(board, WIN_REWARD, true);
             if (print)
                 System.out.println("O Wins!");
             oWins++;
             return PlayerToken.O_PLAYER;
         } else {
-            xPlayer.giveReward(board, DRAW_REWARD);
-            oPlayer.giveReward(board, DRAW_REWARD);
+            xPlayer.giveReward(board, DRAW_REWARD, true);
+            oPlayer.giveReward(board, DRAW_REWARD, true);
             if (print)
                 System.out.println("Cat Wins!");
             ties++;
