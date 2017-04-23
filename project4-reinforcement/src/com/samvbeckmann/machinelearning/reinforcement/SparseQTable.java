@@ -3,6 +3,7 @@ package com.samvbeckmann.machinelearning.reinforcement;
 import com.samvbeckmann.machinelearning.reinforcement.simulation.Board;
 
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Defines a Q-Table that provides a Q function for use in Q-Learning.
@@ -30,6 +31,10 @@ public class SparseQTable {
         return info;
     }
 
+    public Set<StateAction> getAllPairs() {
+        return table.keySet();
+    }
+
     /**
      * Gets the Q-Value for a given state and action.
      *
@@ -41,6 +46,10 @@ public class SparseQTable {
         return getCorrectInfoPair(state, action).qValue;
     }
 
+    public double getQValue(StateAction sa) {
+        return getCorrectInfoPair(sa).qValue;
+    }
+
     /**
      * Takes a given value, and set the q-value of the state-action pair to that value.
      *
@@ -49,7 +58,10 @@ public class SparseQTable {
      * @param val    The value to set the state-action pair to.
      */
     public void setQValue(Board state, int action, double val) {
-        StateAction sa = new StateAction(state, action);
+        setQValue(new StateAction(state, action), val);
+    }
+
+    public void  setQValue(StateAction sa, double val) {
         PairInfo info = getCorrectInfoPair(sa);
         info.qValue = val;
         table.put(sa, info);
@@ -61,14 +73,23 @@ public class SparseQTable {
         info.timesVisited += 1;
         table.put(sa, info);
     }
+    public int getTimesVisited(Board state, int action) {
+        return getCorrectInfoPair(state, action).timesVisited;
+    }
 
     public double alphaCalc(Board state, int action) {
-        PairInfo info = getCorrectInfoPair(state, action);
-        return 1 / info.timesVisited;
+        return 1 / getCorrectInfoPair(state, action).timesVisited;
+    }
+
+    public double alphaCalc(StateAction sa) {
+        return 1 / getCorrectInfoPair(sa).timesVisited;
     }
 
     public void setEligibility(Board state, int action, double eligibility) {
-        StateAction sa = new StateAction(state, action);
+        setEligibility(new StateAction(state, action), eligibility);
+    }
+
+    public void setEligibility(StateAction sa, double eligibility) {
         PairInfo info = getCorrectInfoPair(sa);
         info.eligibility = eligibility;
         table.put(sa, info);
@@ -78,10 +99,14 @@ public class SparseQTable {
         return getCorrectInfoPair(state, action).eligibility;
     }
 
+    public double getEligibility(StateAction sa) {
+        return getCorrectInfoPair(sa).eligibility;
+    }
+
     /**
      * Wrapper around a State-Action pair that provides a unique hash and equality.
      */
-    class StateAction {
+    public class StateAction {
         private final Board state;
         private final int action;
 
