@@ -11,18 +11,23 @@ import java.util.HashMap;
  */
 public class SparseQTable {
 
-    private final HashMap<StateAction, Double> table;
-    private final HashMap<StateAction, Integer> alpha;
-    private double def = 0;
+    private final HashMap<StateAction, PairInfo> table;
+    private final PairInfo DEFAULT_INFO = new PairInfo(0, 0, 0);
 
     public SparseQTable() {
-        this(0);
+        table = new HashMap<>();
     }
 
-    public SparseQTable(double def) {
-        this.def = def;
-        table = new HashMap<>();
-        alpha = new HashMap<>();
+    private PairInfo getCorrectInfoPair(Board state, int action) {
+        return getCorrectInfoPair(new StateAction(state, action));
+    }
+
+    private PairInfo getCorrectInfoPair(StateAction pair) {
+        PairInfo info = table.get(pair);
+        if (info == null) {
+            info = new PairInfo(DEFAULT_INFO);
+        }
+        return info;
     }
 
     /**
@@ -33,7 +38,7 @@ public class SparseQTable {
      * @return The q-value for the provided state-action pair.
      */
     public double getQValue(Board state, int action) {
-        return table.getOrDefault(new StateAction(state, action), def);
+        return getCorrectInfoPair(state, action).qValue;
     }
 
     /**
@@ -44,16 +49,33 @@ public class SparseQTable {
      * @param val    The value to set the state-action pair to.
      */
     public void setQValue(Board state, int action, double val) {
-        table.put(new StateAction(state, action), val);
+        StateAction sa = new StateAction(state, action);
+        PairInfo info = getCorrectInfoPair(sa);
+        info.qValue = val;
+        table.put(sa, info);
     }
 
     public void incrementAlpha(Board state, int action) {
-        StateAction wrapper = new StateAction(state, action);
-        alpha.put(wrapper, alpha.getOrDefault(wrapper, 0) + 1);
+        StateAction sa = new StateAction(state, action);
+        PairInfo info = getCorrectInfoPair(sa);
+        info.timesVisited += 1;
+        table.put(sa, info);
     }
 
     public double alphaCalc(Board state, int action) {
-        return 1 / alpha.getOrDefault(new StateAction(state, action), 0);
+        PairInfo info = getCorrectInfoPair(state, action);
+        return 1 / info.timesVisited;
+    }
+
+    public void setEligibility(Board state, int action, double eligibility) {
+        StateAction sa = new StateAction(state, action);
+        PairInfo info = getCorrectInfoPair(sa);
+        info.eligibility = eligibility;
+        table.put(sa, info);
+    }
+
+    public double getEligibility(Board state, int action) {
+        return getCorrectInfoPair(state, action).eligibility;
     }
 
     /**
@@ -82,6 +104,45 @@ public class SparseQTable {
         public int hashCode() {
             int result = state.hashCode();
             result = 31 * result + action;
+            return result;
+        }
+    }
+
+    class PairInfo {
+        private double qValue;
+        private int timesVisited;
+        private double eligibility;
+
+        PairInfo(double qValue, int timesVisited, double eligibility) {
+            this.qValue = qValue;
+            this.timesVisited = timesVisited;
+            this.eligibility = eligibility;
+        }
+
+        PairInfo(PairInfo pi) {
+            this(pi.qValue, pi.timesVisited, pi.eligibility);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            PairInfo pairInfo = (PairInfo) o;
+
+            return Double.compare(pairInfo.qValue, qValue) == 0 && timesVisited == pairInfo.timesVisited &&
+                    Double.compare(pairInfo.eligibility, eligibility) == 0;
+        }
+
+        @Override
+        public int hashCode() {
+            int result;
+            long temp;
+            temp = Double.doubleToLongBits(qValue);
+            result = (int) (temp ^ (temp >>> 32));
+            result = 31 * result + timesVisited;
+            temp = Double.doubleToLongBits(eligibility);
+            result = 31 * result + (int) (temp ^ (temp >>> 32));
             return result;
         }
     }

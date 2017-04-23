@@ -11,18 +11,19 @@ import java.util.Random;
  * Defines a tic-tac-toe player that uses Q-Learning to play.
  */
 @SuppressWarnings("unused")
-public class QLearnerPlayer implements TicTacToePlayer {
+public class SarsaTicTacToePlayer implements TicTacToePlayer {
 
     private SparseQTable qTable;
     private Board lastState;
     private int lastAction;
+    private int nextAction;
     private double gamma;
     private Random rnd;
     private double epsilon;
 
     private final static double GAMMA = 0.9;
 
-    public QLearnerPlayer() {
+    public SarsaTicTacToePlayer() {
         this.qTable = new SparseQTable();
         this.lastState = null;
         this.lastAction = -1;
@@ -33,27 +34,18 @@ public class QLearnerPlayer implements TicTacToePlayer {
     @Override
     public int interact(Board board) {
         lastState = new Board(board);
-        int action = selectAction(board);
-        qTable.incrementAlpha(lastState, action);
-        lastAction = action;
-        return action;
+        qTable.incrementAlpha(lastState, nextAction);
+        lastAction = nextAction;
+        return nextAction;
     }
 
     @Override
     public void giveReward(Board board, double reward, boolean terminal) {
-        if (lastState == null) return;
-        List<Integer> possibleActions = board.getAvailableActions();
-        double maxNextUtility = -Double.MAX_VALUE;
-        if (possibleActions.size() > 0) {
-            qTable.getQValue(board, possibleActions.get(0));
-            for (int action : possibleActions) {
-                maxNextUtility = Math.max(qTable.getQValue(board, action), maxNextUtility);
-            }
-        } else {
-            maxNextUtility = 0;
-        }
 
-        double qDelta = qTable.alphaCalc(lastState, lastAction) * (reward + GAMMA * maxNextUtility - qTable.getQValue(lastState, lastAction));
+        nextAction = selectAction(board);
+        if (lastState == null) return;
+
+        double qDelta = qTable.alphaCalc(lastState, lastAction) * (reward + GAMMA * qTable.getQValue(board, nextAction) - qTable.getQValue(lastState, lastAction));
         qTable.setQValue(lastState, lastAction, qTable.getQValue(lastState, lastAction) + qDelta);
 
         if (terminal) {
@@ -94,7 +86,9 @@ public class QLearnerPlayer implements TicTacToePlayer {
     // ε-greedy
     private int selectAction(Board state) {
         List<Integer> possibleActions = state.getAvailableActions();
-        if (rnd.nextDouble() < epsilon) {
+        if (possibleActions.size() == 0) {
+            return -1;
+        } else if (rnd.nextDouble() < epsilon) {
             return possibleActions.get(rnd.nextInt(possibleActions.size()));
         } else {
             double currentMax = qTable.getQValue(state, possibleActions.get(0));
