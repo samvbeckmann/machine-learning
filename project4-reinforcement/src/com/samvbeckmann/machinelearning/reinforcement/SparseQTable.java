@@ -78,7 +78,7 @@ public class SparseQTable {
     }
 
     public double alphaCalc(Board state, int action) {
-        return 1 / getCorrectInfoPair(state, action).timesVisited;
+        return 1.0 / getCorrectInfoPair(state, action).timesVisited;
     }
 
     public double alphaCalc(StateAction sa) {
@@ -131,6 +131,11 @@ public class SparseQTable {
             result = 31 * result + action;
             return result;
         }
+
+        @Override
+        public String toString() {
+            return state.toString() + ": " + action;
+        }
     }
 
     class PairInfo {
@@ -169,6 +174,11 @@ public class SparseQTable {
             temp = Double.doubleToLongBits(eligibility);
             result = 31 * result + (int) (temp ^ (temp >>> 32));
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return "" + qValue;
         }
     }
 }
