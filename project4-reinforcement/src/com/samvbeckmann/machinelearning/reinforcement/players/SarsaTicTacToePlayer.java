@@ -59,30 +59,6 @@ public class SarsaTicTacToePlayer implements TicTacToePlayer {
         // NOOP
     }
 
-//    private int selectAction(Board state) {
-//        double temp = 1 / Math.log(alpha.getStateValue(state));
-//        List<Integer> actions = state.getAvailableActions();
-//        double[] probabilities = new double[actions.size()];
-//        double sum = 0;
-//        for (int i = 0; i < actions.size(); i++) {
-//            probabilities[i] = Math.exp(qTable.getQValue(state, actions.get(i)) / temp);
-//            sum += probabilities[i];
-//        }
-//        double runningTotal = 0;
-//        for (int i = 0; i < probabilities.length; i++) {
-//            probabilities[i] = probabilities[i] / sum + runningTotal;
-//            runningTotal += probabilities[i];
-//        }
-//
-//        double choiceSelector = rnd.nextDouble();
-//        for (int i = 0; i < probabilities.length;  i++) {
-//            if (choiceSelector < probabilities[i]) {
-//                return actions.get(i);
-//            }
-//        }
-//        return -1;
-//    }
-
     // ε-greedy
     private int selectAction(Board state) {
         List<Integer> possibleActions = state.getAvailableActions();

@@ -31,6 +31,7 @@ class Environment {
     private int oWins;
     private int ties;
     private final Random rnd;
+    private int completedRounds;
 
     /**
      * Creates a new simulation environment with all variables.
@@ -65,6 +66,7 @@ class Environment {
         this.xWins = 0;
         this.oWins = 0;
         this.ties = 0;
+        this.completedRounds = 0;
     }
 
     /**
@@ -137,17 +139,16 @@ class Environment {
      * Runs the tic-tac-toe simulation using the environment variables.
      */
     private void runSimulation() {
-//        for (int i = 0; i < rounds; i++) {
-//            winArray[i] = runGame(new MinimaxTicTacToePlayer());
-//        }
-//
-//        if (stats) System.out.print(getStatsString());
 
         while (true) {
             for (int i = 0; i < rounds; i++) {
                 winArray[i] = runGame(new MinimaxTicTacToePlayer());
+                completedRounds++;
             }
-            if (stats) System.out.print(getStatsString());
+            if (stats) {
+                System.out.println("Total Rounds: " + completedRounds);
+                System.out.print(getStatsString());
+            }
             xWins = oWins = ties = 0;
         }
     }
@@ -244,6 +245,7 @@ class Environment {
         for (int i = 0; i < rounds; i++) {
             result.append(winArray[i].statsSymbol()).append(" ");
         }
+        result.append('\n');
         return result.toString();
     }
 }

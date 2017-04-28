@@ -63,23 +63,6 @@ public class QLearnerLambdaPlayer implements TicTacToePlayer {
                 qTable.setEligibility(pair, 0);
             }
         }
-//
-//
-//        return currentBestAction;
-//        double maxNextUtility = -Double.MAX_VALUE;
-//        if (possibleActions.size() > 0) {
-//            qTable.getQValue(board, possibleActions.get(0));
-//            for (int action : possibleActions) {
-//                maxNextUtility = Math.max(qTable.getQValue(board, action), maxNextUtility);
-//            }
-//        } else {
-//            maxNextUtility = 0;
-//        }
-//
-//
-//
-//        double qDelta = qTable.alphaCalc(lastState, lastAction) * (reward + GAMMA * maxNextUtility - qTable.getQValue(lastState, lastAction));
-//        qTable.setQValue(lastState, lastAction, qTable.getQValue(lastState, lastAction) + qDelta);
 
         if (terminal) {
             lastState = null;
@@ -91,30 +74,6 @@ public class QLearnerLambdaPlayer implements TicTacToePlayer {
     public void setPlayer(PlayerToken playerID) {
         // NOOP
     }
-
-//    private int selectAction(Board state) {
-//        double temp = 1 / Math.log(alpha.getStateValue(state));
-//        List<Integer> actions = state.getAvailableActions();
-//        double[] probabilities = new double[actions.size()];
-//        double sum = 0;
-//        for (int i = 0; i < actions.size(); i++) {
-//            probabilities[i] = Math.exp(qTable.getQValue(state, actions.get(i)) / temp);
-//            sum += probabilities[i];
-//        }
-//        double runningTotal = 0;
-//        for (int i = 0; i < probabilities.length; i++) {
-//            probabilities[i] = probabilities[i] / sum + runningTotal;
-//            runningTotal += probabilities[i];
-//        }
-//
-//        double choiceSelector = rnd.nextDouble();
-//        for (int i = 0; i < probabilities.length;  i++) {
-//            if (choiceSelector < probabilities[i]) {
-//                return actions.get(i);
-//            }
-//        }
-//        return -1;
-//    }
 
     // ε-greedy
     private int selectAction(Board state) {

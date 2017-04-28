@@ -21,13 +21,14 @@ public class QLearnerPlayer implements TicTacToePlayer {
     private double epsilon;
 
     private final static double GAMMA = 0.9;
+    private final static double UPDATE_RULE = 0.999;
 
     public QLearnerPlayer() {
         this.qTable = new SparseQTable();
         this.lastState = null;
         this.lastAction = -1;
         this.rnd = new Random();
-        this.epsilon = 0.05;
+        this.epsilon = 1;
     }
 
     @Override
@@ -58,7 +59,7 @@ public class QLearnerPlayer implements TicTacToePlayer {
 
         if (terminal) {
             lastState = null;
-            epsilon *= .999;
+            epsilon *= UPDATE_RULE;
         }
     }
 
@@ -66,31 +67,6 @@ public class QLearnerPlayer implements TicTacToePlayer {
     public void setPlayer(PlayerToken playerID) {
         // NOOP
     }
-
-    // Boltzman Exploration
-//    private int selectAction(Board state) {
-//
-//        List<Integer> actions = state.getAvailableActions();
-//        double[] probabilities = new double[actions.size()];
-//        double sum = 0;
-//        for (int i = 0; i < actions.size(); i++) {
-//            probabilities[i] = Math.exp(qTable.getQValue(state, actions.get(i)) / epsilon);
-//            sum += probabilities[i];
-//        }
-//        double runningTotal = 0;
-//        for (int i = 0; i < probabilities.length; i++) {
-//            probabilities[i] = probabilities[i] / sum + runningTotal;
-//            runningTotal += probabilities[i];
-//        }
-//
-//        double choiceSelector = rnd.nextDouble();
-//        for (int i = 0; i < probabilities.length;  i++) {
-//            if (choiceSelector < probabilities[i]) {
-//                return actions.get(i);
-//            }
-//        }
-//        return -1;
-//    }
 
     // ε-greedy
     private int selectAction(Board state) {
